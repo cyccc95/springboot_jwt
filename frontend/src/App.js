@@ -7,8 +7,8 @@ import Chart from './pages/Chart';
 function App() {
   return (
     <Routes>
-      <Route path="/" exact={true} element={<SignUp />} />
-      <Route path="/signIn" exact={true} element={<SignIn />} />
+      <Route path="/" exact={true} element={<SignIn />} />
+      <Route path="/signUp" exact={true} element={<SignUp />} />
       <Route path="/chart" exact={true} element={<Chart />} />
     </Routes>
   );
