@@ -1,44 +1,84 @@
-//package com.backend.config.security;
-//
-//import lombok.RequiredArgsConstructor;
-//import org.springframework.security.core.Authentication;
-//import org.springframework.security.core.context.SecurityContextHolder;
-//import org.springframework.util.StringUtils;
-//import org.springframework.web.filter.GenericFilterBean;
-//
-//import javax.servlet.FilterChain;
-//import javax.servlet.ServletException;
-//import javax.servlet.ServletRequest;
-//import javax.servlet.ServletResponse;
-//import javax.servlet.http.HttpServletRequest;
-//import java.io.IOException;
-//
-//@RequiredArgsConstructor
-//public class JwtAuthenticationFilter extends GenericFilterBean {
-//
-//    private final JwtTokenProvider jwtTokenProvider;
-//
-//    @Override
-//    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-//
-//        // 1. Request Header에서 JWT 토큰 추출
-//        String token = resolveToken((HttpServletRequest) request);
-//
-//        // 2. validateToken으로 토큰 유효성 검사
-//        if (token != null && jwtTokenProvider.validateToken(token)) {
-//            // 토큰이 유효할 경우 토큰에서 Authentication 객체를 가지고 와서 SecurityContext에 저장
-//            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-//            SecurityContextHolder.getContext().setAuthentication(authentication);
-//        }
-//        chain.doFilter(request, response);
-//    }
-//
-//    // Request Header에서 토큰 정보 추출
-//    private String resolveToken(HttpServletRequest request) {
-//        String bearerToken = request.getHeader("Authorization");
-//        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer")) {
-//            return bearerToken.substring(7);
-//        }
-//        return null;
-//    }
-//}
+package com.backend.config.security;
+
+import com.backend.app.user.service.UserDetailsServiceImpl;
+import com.backend.common.model.ApiResponse;
+import com.backend.common.model.StatusCode;
+import com.backend.common.util.JwtUtil;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.web.filter.OncePerRequestFilter;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
+
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Slf4j
+@RequiredArgsConstructor
+public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final JwtProvider jwtProvider;
+    private final UserDetailsServiceImpl userDetailsServiceImpl;
+    private static final ObjectMapper mapper = new ObjectMapper();
+
+    @Override
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        try {
+            String jwt = JwtUtil.getJwtFromRequest(request);
+            if (jwt != null) {
+                JwtValidation jwtValidation = jwtProvider.validateToken(jwt);
+                if (jwtValidation.isSuccess()) {
+                    Long userIdx = jwtProvider.getUserIdxFromJwt(jwt);
+                    UserDetails userDetails = userDetailsServiceImpl.loadUserByIdx(userIdx);
+                    if (userDetails != null) {
+                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                                userDetails,
+                                "",
+                                userDetails.getAuthorities()
+                        );
+                        usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+                    } else {
+                        log.error("Could not find user by index");
+                        returnError(response, StatusCode.CODE_604);
+                        return;
+                    }
+                } else {
+                    log.error("Failed to validate jwt");
+                    returnError(response, jwtValidation.getCode());
+                    return;
+                }
+            }
+        } catch (Exception e) {
+            log.error("Could not set user authentication in security context", e);
+            returnError(response, StatusCode.CODE_652);
+            return;
+        }
+        try {
+            filterChain.doFilter(request, response);
+        } catch (Exception e) {
+            if (e.getCause().getClass().equals(MaxUploadSizeExceededException.class)) {
+                log.error("MaxUploadSizeExceededException error :: " + e);
+                returnError(response, StatusCode.CODE_801);
+            } else {
+                log.error("filterChain error :: " + e);
+                returnError(response, StatusCode.CODE_655);
+            }
+        }
+    }
+
+    public void returnError(HttpServletResponse response, StatusCode errorCode) throws IOException {
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        mapper.writeValue(response.getWriter(), new ApiResponse(errorCode));
+    }
+}
