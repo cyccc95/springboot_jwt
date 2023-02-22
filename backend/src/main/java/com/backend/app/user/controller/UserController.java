@@ -27,15 +27,4 @@ public class UserController {
         }
     }
 
-    @PutMapping("/api/v1/app/user")
-    public ResponseEntity<ApiResponse> update(@RequestBody UserDTO.Update userInfo) {
-        try {
-            userService.updateUser(userInfo);
-            return ResponseMessageUtil.successMessage();
-        } catch (CustomException ce) {
-            return ResponseMessageUtil.errorMessage(ce.getCode());
-        } catch (Exception e) {
-            return ResponseMessageUtil.errorMessage(e);
-        }
-    }
 }
