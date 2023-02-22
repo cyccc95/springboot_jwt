@@ -1,4 +1,4 @@
-package com.backend.common.model;
+package com.backend.common.model.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
