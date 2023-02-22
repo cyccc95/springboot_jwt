@@ -1,6 +1,6 @@
 package com.backend.app.user.dto;
 
-import com.backend.common.model.UserType;
+import com.backend.common.model.type.UserType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 public class UserDTO {
 
     @Data
-    public static class Info {
+    public static class Basic {
         private Long idx;
         private String loginId;
         private String nickname;
@@ -25,10 +25,4 @@ public class UserDTO {
         private String password;
     }
 
-    @Data
-    public static class Update {
-        private String loginId;
-        private String nickname;
-        private String password;
-    }
 }
