@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 
 const SignUp = () => {
+  const [user, setUser] = useState();
+
   const [data, setData] = useState({
     userId: '',
     email: '',
@@ -18,6 +21,15 @@ const SignUp = () => {
     e.preventDefault();
     console.log(data);
   };
+
+  useEffect(() => {
+    axios
+      .get('/api/user/1')
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => console.log(error));
+  }, []);
 
   return (
     <>
