@@ -42,4 +42,13 @@ public class UserService {
         userRepository.save(user).toUserBasicDTO();
     }
 
+    @Transactional(readOnly = true)
+    public UserDTO.Simple findByIdx(Long userIdx) throws CustomException {
+        if(CheckUtil.isNullObject(userIdx)) {
+            throw new CustomException(StatusCode.CODE_701);
+        } else {
+            User user = userRepository.findByIdx(userIdx);
+            return user.toUserSimpleDTO();
+        }
+    }
 }
