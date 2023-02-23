@@ -9,6 +9,5 @@ import java.io.Serializable;
 @Data
 public class Auth implements Serializable {
     private Long idx;
-    private UserType userType = UserType.USER;
     private User user;
 }

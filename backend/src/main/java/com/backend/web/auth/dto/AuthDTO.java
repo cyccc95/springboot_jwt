@@ -8,6 +8,5 @@ public class AuthDTO {
     public static class Create {
         private String loginId;
         private String password;
-        private UserType userType;
     }
 }
