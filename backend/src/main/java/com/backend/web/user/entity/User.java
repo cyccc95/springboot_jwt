@@ -1,6 +1,6 @@
-package com.backend.app.user.entity;
+package com.backend.web.user.entity;
 
-import com.backend.app.user.dto.UserDTO;
+import com.backend.web.user.dto.UserDTO;
 import com.backend.common.model.DateAudit;
 import com.backend.common.model.type.UserType;
 import lombok.AccessLevel;

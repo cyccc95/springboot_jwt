@@ -1,4 +1,4 @@
-package com.backend.app.user.dto;
+package com.backend.web.user.dto;
 
 import com.backend.common.model.type.UserType;
 import lombok.Data;

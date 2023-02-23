@@ -1,14 +1,14 @@
-package com.backend.app.user.service;
+package com.backend.web.user.service;
 
-import com.backend.app.user.dto.UserDTO;
-import com.backend.app.user.entity.User;
-import com.backend.app.user.repository.UserRepository;
+import com.backend.web.user.dto.UserDTO;
+import com.backend.web.user.entity.User;
+import com.backend.web.user.repository.UserRepository;
 import com.backend.common.model.CustomException;
 import com.backend.common.model.StatusCode;
 import com.backend.common.model.type.UserType;
 import com.backend.common.util.CheckUtil;
 import lombok.RequiredArgsConstructor;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,13 +30,12 @@ public class UserService {
             throw new CustomException(StatusCode.CODE_603);
         }
 
-//        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         User user = User.builder()
                 .loginId(userInfo.getLoginId())
                 .nickname(userInfo.getNickname())
-//                .password(passwordEncoder.encode(userInfo.getPassword()))
-                .password(userInfo.getPassword())
-                .userType(UserType.ROLE_USER)
+                .password(passwordEncoder.encode(userInfo.getPassword()))
+                .userType(UserType.USER)
                 .build();
         user.setCreateAt(LocalDateTime.now());
         user.setUpdateAt(LocalDateTime.now());

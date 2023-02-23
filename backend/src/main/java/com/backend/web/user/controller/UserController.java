@@ -1,7 +1,7 @@
-package com.backend.app.user.controller;
+package com.backend.web.user.controller;
 
-import com.backend.app.user.dto.UserDTO;
-import com.backend.app.user.service.UserService;
+import com.backend.web.user.dto.UserDTO;
+import com.backend.web.user.service.UserService;
 import com.backend.common.model.ApiResponse;
 import com.backend.common.model.CustomException;
 import com.backend.common.util.ResponseMessageUtil;
@@ -15,7 +15,7 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping("/api/v1/app/user")
+    @PostMapping("/api/user/signUp")
     public ResponseEntity<ApiResponse> signUp(@RequestBody UserDTO.Create userInfo) {
         try {
             userService.createUser(userInfo);
