@@ -1,6 +1,6 @@
 package com.backend.config.security;
 
-import com.backend.app.user.entity.User;
+import com.backend.web.user.entity.User;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;

@@ -1,6 +1,6 @@
 package com.backend.config.security;
 
-import com.backend.app.user.service.UserDetailsServiceImpl;
+import com.backend.web.user.service.UserDetailsServiceImpl;
 import com.backend.common.model.ApiResponse;
 import com.backend.common.model.StatusCode;
 import com.backend.common.util.JwtUtil;
