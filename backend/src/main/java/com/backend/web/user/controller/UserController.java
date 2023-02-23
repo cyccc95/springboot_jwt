@@ -27,4 +27,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/api/user/{userIdx}")
+    public ResponseEntity<ApiResponse> findByIdx(@PathVariable Long userIdx) {
+        try {
+            return ResponseMessageUtil.successMessage(userService.findByIdx(userIdx));
+        } catch (CustomException ce) {
+            return ResponseMessageUtil.errorMessage(ce.getCode());
+        } catch (Exception e) {
+            return ResponseMessageUtil.errorMessage(e);
+        }
+    }
+
 }
