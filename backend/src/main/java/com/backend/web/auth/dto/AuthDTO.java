@@ -1,6 +1,5 @@
 package com.backend.web.auth.dto;
 
-import com.backend.common.model.type.UserType;
 import lombok.Data;
 
 public class AuthDTO {
