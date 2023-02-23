@@ -25,4 +25,9 @@ public class UserDTO {
         private String password;
     }
 
+    @Data
+    public static class Simple {
+        private String loginId;
+        private String nickname;
+    }
 }
