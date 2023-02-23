@@ -35,8 +35,8 @@ public class AuthService {
             throw new CustomException(StatusCode.CODE_605);
         } else {
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-            boolean isMathch = passwordEncoder.matches(signInInfo.getPassword(), user.getPassword());
-            if (isMathch) {
+            boolean isMatch = passwordEncoder.matches(signInInfo.getPassword(), user.getPassword());
+            if (isMatch) {
                 return getJwtAuthenticationResponse(signInInfo, user);
             } else {
                 throw new CustomException(StatusCode.CODE_605);
