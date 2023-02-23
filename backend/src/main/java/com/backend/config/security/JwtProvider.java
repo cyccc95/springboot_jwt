@@ -19,7 +19,7 @@ import java.util.HashMap;
 @Component
 public class JwtProvider {
 
-    @Value("${jwt.expirationInDay.accessToken")
+    @Value("${jwt.expirationInDay.accessToken}")
     private int accessTokenExpiration;
 
     @Value("${jwt.expirationInDay.refreshToken}")
@@ -56,7 +56,8 @@ public class JwtProvider {
 
     private String generateToken(String userIdx, String jwtType, Integer tokenExpirationInDay) {
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("Asia/Seoul"));
-        ZonedDateTime expiryDate = now.plusDays(tokenExpirationInDay);
+//        ZonedDateTime expiryDate = now.plusDays(tokenExpirationInDay);
+        ZonedDateTime expiryDate = now.plusSeconds(tokenExpirationInDay);
         HashMap<String, Object> claims = new HashMap<>();
         claims.put(JWT_TYPE, jwtType);
         claims.put(USER_INDEX, userIdx);
