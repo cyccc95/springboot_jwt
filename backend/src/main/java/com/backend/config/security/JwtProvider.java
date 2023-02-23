@@ -49,7 +49,7 @@ public class JwtProvider {
         Claims claims = Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()
-                .parseClaimsJwt(token)
+                .parseClaimsJws(token)
                 .getBody();
         return Long.parseLong(claims.get(USER_INDEX).toString());
     }
