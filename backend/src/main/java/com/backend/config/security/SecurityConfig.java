@@ -12,6 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Spring Security의 가장 기본적인 설정이며 JWT를 사용하지 않더라도 기본으로 들어감
+ */
 @Configuration
 @RequiredArgsConstructor
 public class SecurityConfig {
@@ -35,10 +38,10 @@ public class SecurityConfig {
             .accessDeniedHandler(jwtAccessDeniedHandler)
 
             // h2-console 을 위한 설정을 추가
-            .and()
-            .headers()
-            .frameOptions()
-            .sameOrigin()
+//            .and()
+//            .headers()
+//            .frameOptions()
+//            .sameOrigin()
 
             // 시큐리티는 기본적으로 세션을 사용
             // 여기서는 세션을 사용하지 않기 때문에 세션 설정을 Stateless 로 설정
