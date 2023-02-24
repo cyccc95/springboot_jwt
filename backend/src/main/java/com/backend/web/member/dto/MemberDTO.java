@@ -39,14 +39,6 @@ public class MemberDTO {
         private String loginId;
         private String password;
 
-        public Member toMember(PasswordEncoder passwordEncoder) {
-            return Member.builder()
-                    .loginId(loginId)
-                    .password(passwordEncoder.encode(password))
-                    .memberType(MemberType.ROLE_USER)
-                    .build();
-        }
-
         public UsernamePasswordAuthenticationToken toAuthentication() {
             return new UsernamePasswordAuthenticationToken(loginId, password);
         }
