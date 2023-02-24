@@ -9,6 +9,11 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+/**
+ * key에는 Member Idx
+ * value에는 Refresh Token String
+ * RDB로 구현하게 된다면 생성/수정 시간 칼럼을 추가하여 배치 작업으로 만료된 토큰들을 삭제해주어야함
+ */
 @Getter
 @NoArgsConstructor
 @Table(name = "refresh_token")
