@@ -12,6 +12,10 @@ const SignInPage = () => {
     password: '',
   });
 
+  const successSignIn = () => {
+    navigate('/chart');
+  };
+
   const changeValue = (e) => {
     setAuth({
       ...auth,
@@ -19,19 +23,19 @@ const SignInPage = () => {
     });
   };
 
-  const signInHandler = (e) => {
+  const signInHandler = async (e) => {
     e.preventDefault();
-    axios
-      .post('/api/auth/signIn', {
+    try {
+      const response = await axios.post('/api/auth/signIn', {
         loginId: auth.loginId,
         password: auth.password,
-      })
-      .then((response) => {
-        response.data.code === 200 &&
-          localStorage.setItem('accessToken', response.data.data.accessToken);
-        response.data.code === 200 && navigate('/chart');
-      })
-      .catch((error) => console.log(error.response.data.message));
+      });
+      console.log(response);
+      response.data.code === 200 && successSignIn();
+    } catch (error) {
+      console.log(error);
+      alert(error.response.data.message);
+    }
   };
 
   return (

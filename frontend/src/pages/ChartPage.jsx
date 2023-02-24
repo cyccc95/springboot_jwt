@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import client from '../config/axiosConfig';
 
 const ChartPage = () => {
   const [user, setUser] = useState({
@@ -9,13 +10,13 @@ const ChartPage = () => {
   });
 
   useEffect(() => {
-    axios.defaults.headers.common[
-      'Authorization'
-    ] = `Bearer ${localStorage.getItem('accessToken')}`;
-    axios
-      .get('/api/member/1')
-      .then((response) => setUser({ ...user, ...response.data.data }))
-      .catch((error) => console.log(error));
+    // axios.defaults.headers.common[
+    //   'Authorization'
+    // ] = `Bearer ${localStorage.getItem('accessToken')}`;
+    // axios
+    //   .get('/api/member/1')
+    //   .then((response) => setUser({ ...user, ...response.data.data }))
+    //   .catch((error) => console.log(error));
   }, []);
 
   return (

@@ -13,6 +13,11 @@ const SignInPage = () => {
     nickname: '',
   });
 
+  const successSignUp = () => {
+    alert('회원가입 완료');
+    navigate('/signIn');
+  };
+
   const changeValue = (e) => {
     setUser({
       ...user,
@@ -20,16 +25,18 @@ const SignInPage = () => {
     });
   };
 
-  const signUpHandler = (e) => {
+  const signUpHandler = async (e) => {
     e.preventDefault();
-    axios
-      .post('/api/member/signUp', {
+    try {
+      const response = await axios.post('/api/member/signUp', {
         loginId: user.loginId,
-        password: user.password,
         nickname: user.nickname,
-      })
-      .then((response) => response.data.code === 200 && navigate('/signIn'))
-      .catch((error) => console.log(error.response.data.message));
+        password: user.password,
+      });
+      response.data.code === 200 && successSignUp();
+    } catch (error) {
+      alert(error.response.data.message);
+    }
   };
 
   return (
@@ -46,20 +53,20 @@ const SignInPage = () => {
           />
         </Form.Group>
         <Form.Group className="mb-3">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Enter Password"
-            name="password"
-            onChange={changeValue}
-          />
-        </Form.Group>
-        <Form.Group className="mb-3">
           <Form.Label>Nickname</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter Nickname"
             name="nickname"
+            onChange={changeValue}
+          />
+        </Form.Group>
+        <Form.Group className="mb-3">
+          <Form.Label>Password</Form.Label>
+          <Form.Control
+            type="password"
+            placeholder="Enter Password"
+            name="password"
             onChange={changeValue}
           />
         </Form.Group>
