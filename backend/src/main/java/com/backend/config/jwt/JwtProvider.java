@@ -18,6 +18,10 @@ import java.security.Key;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * 유저 정보로 JWT 토큰을 만들거나 토큰을 바탕으로 유저 정보를 가져옴
+ * JWT 토큰에 관련된 암호화, 복호화, 검증 로직은 다 이곳에서 이루어짐
+ */
 @Slf4j
 @Component
 public class JwtProvider {
@@ -29,11 +33,20 @@ public class JwtProvider {
 
     private final Key key;
 
+    /**
+     * application.properties에 정의해놓은 jwt.secret 값을 가져와서 JWT를 만들 때 사용하는 암호화 키값을 생성
+     */
     public JwtProvider(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    /**
+     * 유저 정보를 넘겨받아서 AccessToken과 RefreshToken을 생성
+     * 넘겨받은 유저 정보의 authentication.getName() 메서드가 username을 가져옴
+     * username으로 Member Idx를 저장했기 때문에 해당 값이 설정
+     * AccessToken에는 유저와 권한 정보를 담고 RefreshToken에는 아무 정보도 담지 않음
+     */
     public TokenDTO generateTokenDto(Authentication authentication) {
         // 권한들 가져오기
         String authorities = authentication.getAuthorities().stream()
@@ -65,6 +78,14 @@ public class JwtProvider {
                 .build();
     }
 
+    /**
+     * JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼냄
+     * AceessToken에만 유저 정보를 담기 때문에 명시적으로 accessToken을 파라미터로 받게 함
+     * RefreshToken에는 아무 정보 없이 만료일자만 담음
+     * UserDetails 객체를 생성해서 UsernamePasswordAuthenticationToken 형태로 리턴하는데 SecurityContext를 사용하기 위한 절차라고 생각
+     * SecurityContext가 Authentication 객체를 저장하기 때문
+     * parseClaims 메서드는 만료된 토큰이어도 정보를 꺼내기 위해서 따로 분리
+     */
     public Authentication getAuthentication(String accessToken) {
         // 토큰 복호화
         Claims claims = parseClaims(accessToken);
@@ -85,6 +106,10 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
+    /**
+     * 토큰 정보를 검증
+     * Jwts 모듈이 알아서 Exception을 던져줌
+     */
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
