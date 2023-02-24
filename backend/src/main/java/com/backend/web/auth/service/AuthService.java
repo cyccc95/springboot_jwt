@@ -24,6 +24,18 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    /**
+     * Authentication
+     * 사용자가 입력한 loginId, password 인증 정보 객체 UsernamePasswordAuthenticationToken을 생성
+     * 아직 인증이 완료된 객체가 아니며 AuthenticationManager에서 authenticate 메서드의 파라미터로 넘겨서 검증 후에 Authentication을 받음
+     * AuthenticationManager
+     * 스프링 시큐리티에서 실제로 인증이 이루어지는 곳
+     * authenticate 메서드 하나만 정의되어 있는 인터페이스이며 아래 코드에서는 Builder에서 UserDetails의 유저 정보가 서로 일치하는지 검사
+     * 내부적으로 수행되는 검증 과정은 CustomUserDetailsService 클래스
+     * 인증이 완료된 authentication 에는 Member Idx가 들어있음
+     * 인증 객체를 바탕으로 AccessToken + RefreshToken을 생성
+     * RefreshToken은 저장하고, 생성된 토큰 정보를 클라이언트에 전달
+     */
     @Transactional
     public TokenDTO signIn(MemberDTO.SignIn signInInfo) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
@@ -48,6 +60,13 @@ public class AuthService {
         return tokenDto;
     }
 
+    /**
+     * AccessToken + RefreshToken을 RequestBody에 받아서 검증
+     * RefreshToken의 만료 여부를 먼저 검사
+     * AccessToken을 복호화하여 유저 정보(Member Idx)를 가져오고 저장소에 있는 RefreshToken과 클라이언트가 전달한 RefreshToken의 일치 여부를 검사
+     * 만약 일치한다면 로그인했을 때와 동일하게 새로운 토큰을 생성해서 클라이언트에 전달
+     * RefreshToken은 재사용하지 못하게 저장소에서 값을 갱신
+     */
     @Transactional
     public TokenDTO refresh(TokenRequestDTO tokenRequestDTO) {
         // 1. Refresh Token 검증
