@@ -29,8 +29,8 @@ public class AuthController {
         try {
             TokenDTO token = authService.signIn(signInInfo);
             return ResponseMessageUtil.successMessage(token);
-//        } catch (CustomException ce) {
-//            return ResponseMessageUtil.errorMessage(ce.getCode());
+        } catch (CustomException ce) {
+            return ResponseMessageUtil.errorMessage(ce.getCode());
         } catch (Exception e) {
             return ResponseMessageUtil.errorMessage(e);
         }
