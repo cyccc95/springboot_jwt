@@ -22,7 +22,7 @@ const SignInPage = () => {
   const signInHandler = (e) => {
     e.preventDefault();
     axios
-      .post('/api/auth', {
+      .post('/api/auth/signIn', {
         loginId: auth.loginId,
         password: auth.password,
       })

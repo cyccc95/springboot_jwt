@@ -4,8 +4,8 @@ import axios from 'axios';
 
 const ChartPage = () => {
   const [user, setUser] = useState({
-    loginId:'',
-    nickname:''
+    loginId: '',
+    nickname: '',
   });
 
   useEffect(() => {
@@ -13,8 +13,8 @@ const ChartPage = () => {
       'Authorization'
     ] = `Bearer ${localStorage.getItem('accessToken')}`;
     axios
-      .get('/api/user/1')
-      .then((response) => setUser({...user, response.data.data}))
+      .get('/api/member/1')
+      .then((response) => setUser({ ...user, ...response.data.data }))
       .catch((error) => console.log(error));
   }, []);
 

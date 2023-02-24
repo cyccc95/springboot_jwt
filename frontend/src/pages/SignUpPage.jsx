@@ -23,7 +23,7 @@ const SignInPage = () => {
   const signUpHandler = (e) => {
     e.preventDefault();
     axios
-      .post('/api/user/signUp', {
+      .post('/api/member/signUp', {
         loginId: user.loginId,
         password: user.password,
         nickname: user.nickname,
