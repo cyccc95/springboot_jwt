@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * 로그인/재발급을 처리하는 API
+ * SecurityConfig에서 /auth/** 요청은 전부 허용했기 때문에 토큰 검증 로직은 타지 않음
+ * MemberDTO.SignIn에는 사용자가 로그인 시도한 loginId, password String이 존재
+ * TokenRequestDTO에는 재발급을 위한 AccessToken, RefreshToken String이 존재
+ */
 @RestController
 @RequiredArgsConstructor
 public class AuthController {
