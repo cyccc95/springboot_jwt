@@ -1,16 +1,21 @@
 package com.backend.web.auth.service;
 
+import com.backend.common.model.CustomException;
+import com.backend.common.model.StatusCode;
+import com.backend.common.util.CheckUtil;
 import com.backend.config.jwt.JwtProvider;
 import com.backend.web.auth.dto.TokenDTO;
 import com.backend.web.auth.dto.TokenRequestDTO;
 import com.backend.web.auth.entity.RefreshToken;
 import com.backend.web.auth.repository.RefreshTokenRepository;
 import com.backend.web.member.dto.MemberDTO;
+import com.backend.web.member.entity.Member;
 import com.backend.web.member.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,27 +42,41 @@ public class AuthService {
      * RefreshToken은 저장하고, 생성된 토큰 정보를 클라이언트에 전달
      */
     @Transactional
-    public TokenDTO signIn(MemberDTO.SignIn signInInfo) {
-        // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = signInInfo.toAuthentication();
+    public TokenDTO signIn(MemberDTO.SignIn signInInfo) throws CustomException{
+        if (CheckUtil.isEmptyString(signInInfo.getLoginId())) {
+            throw new CustomException(StatusCode.CODE_601);
+        } else if (CheckUtil.isEmptyString(signInInfo.getPassword())) {
+            throw new CustomException(StatusCode.CODE_603);
+        }
 
-        // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
-        //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
-        Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
+        Member member = memberRepository.findByLoginId(signInInfo.getLoginId())
+                .orElseThrow(()-> new CustomException(StatusCode.CODE_604));
 
-        // 3. 인증 정보를 기반으로 JWT 토큰 생성
-        TokenDTO tokenDto = jwtProvider.generateTokenDto(authentication);
+            boolean isMatch = passwordEncoder.matches(signInInfo.getPassword(), member.getPassword());
+            if (!isMatch) {
+                throw new CustomException(StatusCode.CODE_605);
+            } else {
+                // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
+                UsernamePasswordAuthenticationToken authenticationToken = signInInfo.toAuthentication();
 
-        // 4. RefreshToken 저장
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
+                // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
+                //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
+                Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
-        refreshTokenRepository.save(refreshToken);
+                // 3. 인증 정보를 기반으로 JWT 토큰 생성
+                TokenDTO tokenDto = jwtProvider.generateTokenDto(authentication);
 
-        // 5. 토큰 발급
-        return tokenDto;
+                // 4. RefreshToken 저장
+                RefreshToken refreshToken = RefreshToken.builder()
+                        .key(authentication.getName())
+                        .value(tokenDto.getRefreshToken())
+                        .build();
+
+                refreshTokenRepository.save(refreshToken);
+
+                // 5. 토큰 발급
+                return tokenDto;
+            }
     }
 
     /**
