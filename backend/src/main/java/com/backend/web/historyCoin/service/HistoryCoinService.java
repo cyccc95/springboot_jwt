@@ -19,7 +19,7 @@ public class HistoryCoinService{
 
     @Transactional(readOnly = true)
     public HistoryCoinDTO.CoinList findAllHistoryCoins() throws CustomException {
-        List<HistoryCoin> list = historyCoinRepository.findAll();
+        List<HistoryCoin> list = historyCoinRepository.findAllHistoryCoins();
         HistoryCoinDTO.CoinList coinList = new HistoryCoinDTO.CoinList();
         coinList.setList(list.stream().map((coin) -> coin.toHistoryCoinBasicDTO()).collect(Collectors.toList()));
         return coinList;
