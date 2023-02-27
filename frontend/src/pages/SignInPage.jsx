@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import Button from 'react-bootstrap/Button';
@@ -31,6 +31,8 @@ const SignInPage = () => {
         password: auth.password,
       });
       console.log(response);
+      localStorage.setItem('accessToken', response.data.data.accessToken);
+      localStorage.setItem('refreshToken', response.data.data.refreshToken);
       response.data.code === 200 && successSignIn();
     } catch (error) {
       console.log(error);
