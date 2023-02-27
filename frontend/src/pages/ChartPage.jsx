@@ -10,13 +10,14 @@ const ChartPage = () => {
   });
 
   useEffect(() => {
-    // axios.defaults.headers.common[
-    //   'Authorization'
-    // ] = `Bearer ${localStorage.getItem('accessToken')}`;
-    // axios
-    //   .get('/api/member/1')
-    //   .then((response) => setUser({ ...user, ...response.data.data }))
-    //   .catch((error) => console.log(error));
+    const timer = setInterval(() => {
+      client
+        .get('/api/member/me')
+        .then((response) => console.log(response))
+        .catch((error) => console.log(error));
+    }, 5000);
+
+    return () => clearInterval(timer);
   }, []);
 
   return (
