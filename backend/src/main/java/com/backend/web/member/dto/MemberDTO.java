@@ -1,10 +1,8 @@
 package com.backend.web.member.dto;
 
 import com.backend.common.model.MemberType;
-import com.backend.web.member.entity.Member;
 import lombok.Data;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.time.LocalDateTime;
 
