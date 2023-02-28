@@ -13,15 +13,17 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class HistoryCoinService{
+public class HistoryCoinService {
 
     private final HistoryCoinRepository historyCoinRepository;
 
     @Transactional(readOnly = true)
     public HistoryCoinDTO.CoinList findAllHistoryCoins() throws CustomException {
-        List<HistoryCoin> list = historyCoinRepository.findAllHistoryCoins();
+        List<HistoryCoin> list = historyCoinRepository.findByIdxBetween(1, 19952);
         HistoryCoinDTO.CoinList coinList = new HistoryCoinDTO.CoinList();
         coinList.setList(list.stream().map((coin) -> coin.toHistoryCoinBasicDTO()).collect(Collectors.toList()));
         return coinList;
     }
+
+
 }
