@@ -17,34 +17,43 @@ import java.util.List;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class HistoryCoinWebSocketHandler  extends TextWebSocketHandler {
+public class HistoryCoinWebSocketHandler extends TextWebSocketHandler {
     private final HistoryCoinWebSocketService historyCoinWebSocketService;
     private List<WebSocketSession> list = new ArrayList<>();
-    private long idx = 0L;
     private int currentIdx = 19952;
 
-    @Scheduled(fixedDelay = 1000)
+    @Scheduled(fixedDelay = 100)
     // 10초마다 idx 1씩 증가시키면서 데이터를 보내줍니다.
     public void scheduledProcessing() throws IOException {
         if (list.size() == 0) return;
         currentIdx++;
 
+        if (currentIdx >= 20001) {
+            for (WebSocketSession session : list) {
+                historyCoinWebSocketService.onClose(session);
+                list.remove(session);
+                if (list.size() == 0) break;
+            }
+        }
+        if (list.size() == 0) return;
+
         HistoryCoinDTO.Basic coin = historyCoinWebSocketService.findByIdx(currentIdx);
         String msg = coin.toString();
         log.info("msg : " + msg);
-
         TextMessage message = new TextMessage(msg.getBytes());
 
         for (WebSocketSession session : list) {
-            session.sendMessage(message);
+            try {
+                handleTextMessage(session, message);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        for(WebSocketSession sess: list) {
-            sess.sendMessage(message);
-        }
+            session.sendMessage(message);
     }
 
     @Override
