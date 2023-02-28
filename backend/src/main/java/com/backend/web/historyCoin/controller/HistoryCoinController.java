@@ -16,9 +16,9 @@ public class HistoryCoinController {
     private final HistoryCoinService historyCoinService;
 
     @GetMapping("/api/historyCoins")
-    public ResponseEntity<ApiResponse> findAllHistoryCoins() {
+    public ResponseEntity<ApiResponse> find100HistoryCoins() {
         try {
-            return ResponseMessageUtil.successMessage(historyCoinService.findAllHistoryCoins());
+            return ResponseMessageUtil.successMessage(historyCoinService.find100HistoryCoins());
         } catch (CustomException ce) {
             return ResponseMessageUtil.errorMessage(ce.getCode());
         } catch (Exception e) {
