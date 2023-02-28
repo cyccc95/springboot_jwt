@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.socket.WebSocketSession;
 
 import javax.websocket.OnClose;
 import javax.websocket.OnOpen;
-import javax.websocket.Session;
 import javax.websocket.server.ServerEndpoint;
 import java.util.Collections;
 import java.util.HashSet;
@@ -23,15 +23,15 @@ public class HistoryCoinWebSocketService {
 
     private final HistoryCoinRepository historyCoinRepository;
 
-    private static Set<Session> clients = Collections.synchronizedSet(new HashSet<Session>());
+    private static Set<WebSocketSession> clients = Collections.synchronizedSet(new HashSet<>());
 
-    @Transactional
+    @Transactional(readOnly = true)
     public HistoryCoinDTO.Basic findByIdx(long idx) {
         return historyCoinRepository.findById(idx).orElseThrow(() -> new IllegalArgumentException("Invalid idx")).toHistoryCoinBasicDTO();
     }
 
     @OnOpen
-    public void onOpen(Session session) {
+    public void onOpen(WebSocketSession session) {
         log.info("Session open : " + session.toString());
         if (!clients.contains(session)) {
             clients.add(session);
@@ -42,7 +42,7 @@ public class HistoryCoinWebSocketService {
     }
 
     @OnClose
-    public void onClose(Session session) {
+    public void onClose(WebSocketSession session) {
         log.info("Session close : " + session);
         clients.remove(session);
     }
