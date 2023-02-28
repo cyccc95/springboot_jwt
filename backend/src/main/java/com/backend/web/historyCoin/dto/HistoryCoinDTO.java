@@ -11,13 +11,13 @@ public class HistoryCoinDTO {
     @Data
     public static class Basic {
         private Long idx;
-        private Double opening_price;
-        private Double high_price;
-        private Double low_price;
-        private Double trade_price;
-        private Double candle_acc_trade_volume;
+        private Double openingPrice;
+        private Double highPrice;
+        private Double lowPrice;
+        private Double tradePrice;
+        private Double candleAccTradeVolume;
         @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-        private LocalDateTime candle_date_time_kst;
+        private LocalDateTime candleDateTimeKst;
     }
 
     @Data
