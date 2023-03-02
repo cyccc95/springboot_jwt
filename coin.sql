@@ -1,7 +1,7 @@
 create database coin character set utf8mb4 default collate utf8mb4_general_ci;
 use coin;
 
-create table coin (
+create table historycoin (
 	idx BIGINT not null auto_increment primary key,
     opening_price double not null,
     high_price double not null,
@@ -26,10 +26,29 @@ create table refresh_token (
     rt_value varchar(255) not null
 );
 
+create table predictcoin (
+	idx BIGINT not null auto_increment primary key,
+    price double not null,
+    date_time datetime not null
+);
 
+create table indicator (
+	idx BIGINT not null auto_increment primary key,
+    bbp double not null,
+    bbc double not null,
+    bbm double not null,
+    ma double not null,
+    macd double not null,
+    rsi double not null,
+    date_time datetime not null
+);
 
-select * from coin;
+select * from historycoin limit 19952;
+select * from historycoin limit 20000;
 select * from member;
 select * from refresh_token;
+drop table coin;
 drop table member;
 drop table refresh_token;
+drop table predictcoin;
+drop table indicator;
