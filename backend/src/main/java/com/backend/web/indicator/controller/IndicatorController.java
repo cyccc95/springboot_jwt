@@ -16,9 +16,9 @@ public class IndicatorController {
     private final IndicatorService indicatorService;
 
     @GetMapping("/api/indicators")
-    public ResponseEntity<ApiResponse> findAll() {
+    public ResponseEntity<ApiResponse> find100Indicators() {
         try {
-            return ResponseMessageUtil.successMessage(indicatorService.findAll());
+            return ResponseMessageUtil.successMessage(indicatorService.find100Indicators());
         } catch (CustomException ce) {
             return ResponseMessageUtil.errorMessage(ce);
         } catch (Exception e) {
