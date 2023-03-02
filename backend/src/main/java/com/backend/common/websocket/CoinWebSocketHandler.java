@@ -24,7 +24,7 @@ public class CoinWebSocketHandler extends TextWebSocketHandler {
     private int currentHistoryIdx = 19952;
     private int currentPredictIdx = 0;
 
-    @Scheduled(fixedDelay = 100)
+    @Scheduled(fixedDelay = 1000)
     public void scheduledProcessing() throws IOException {
         if (list.size() == 0) return;
         currentHistoryIdx++; currentPredictIdx++;
