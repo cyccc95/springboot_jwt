@@ -18,8 +18,8 @@ public class IndicatorService {
     private final IndicatorRepository indicatorRepository;
 
     @Transactional(readOnly = true)
-    public IndicatorDTO.IndicatorList findAll() throws CustomException {
-        List<Indicator> list = indicatorRepository.findAll();
+    public IndicatorDTO.IndicatorList find100Indicators() throws CustomException {
+        List<Indicator> list = indicatorRepository.findByIdxBetween(19853, 19952);
         IndicatorDTO.IndicatorList indicatorList = new IndicatorDTO.IndicatorList();
         indicatorList.setList(list.stream().map((indicator) -> indicator.toIndicatorBasicDTO()).collect(Collectors.toList()));
         return indicatorList;
