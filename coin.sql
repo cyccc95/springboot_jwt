@@ -1,5 +1,5 @@
-create database coin character set utf8mb4 default collate utf8mb4_general_ci;
-use coin;
+create database coinproject character set utf8mb4 default collate utf8mb4_general_ci;
+use coinproject;
 
 create table historycoin (
 	idx BIGINT not null auto_increment primary key,
@@ -14,8 +14,9 @@ create table historycoin (
 create table member (
 	idx BIGINT not null auto_increment primary key,
     loginId varchar(30) not null unique,
-    password varchar(255) not null,
     nickname varchar(30) not null unique,
+    email varchar(100) not null unique,
+    password varchar(255) not null,
     memberType varchar(20) not null,
     createAt datetime not null,
     updateAt datetime not null
@@ -47,6 +48,7 @@ select * from historycoin limit 19952;
 select * from historycoin limit 20000;
 select * from member;
 select * from refresh_token;
+select * from predictcoin;
 drop table coin;
 drop table member;
 drop table refresh_token;
