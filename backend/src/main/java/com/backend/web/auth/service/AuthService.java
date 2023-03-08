@@ -50,11 +50,11 @@ public class AuthService {
         }
 
         Member member = memberRepository.findByLoginId(signInInfo.getLoginId())
-                .orElseThrow(()-> new CustomException(StatusCode.CODE_604));
+                .orElseThrow(()-> new CustomException(StatusCode.CODE_605));
 
             boolean isMatch = passwordEncoder.matches(signInInfo.getPassword(), member.getPassword());
             if (!isMatch) {
-                throw new CustomException(StatusCode.CODE_605);
+                throw new CustomException(StatusCode.CODE_606);
             } else {
                 // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
                 UsernamePasswordAuthenticationToken authenticationToken = signInInfo.toAuthentication();

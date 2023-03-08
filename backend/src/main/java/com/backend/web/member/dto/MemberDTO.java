@@ -13,6 +13,7 @@ public class MemberDTO {
         private Long idx;
         private String loginId;
         private String nickname;
+        private String email;
         private String password;
         private MemberType memberType;
         private LocalDateTime createAt;
@@ -23,12 +24,14 @@ public class MemberDTO {
     public static class Simple {
         private String loginId;
         private String nickname;
+        private String email;
     }
 
     @Data
     public static class SignUp {
         private String loginId;
         private String nickname;
+        private String email;
         private String password;
     }
 
@@ -40,5 +43,17 @@ public class MemberDTO {
         public UsernamePasswordAuthenticationToken toAuthentication() {
             return new UsernamePasswordAuthenticationToken(loginId, password);
         }
+    }
+
+    @Data
+    public static class Update {
+        private String nickname;
+        private String password;
+        private String email;
+    }
+
+    @Data
+    public static class Delete {
+        private String password;
     }
 }

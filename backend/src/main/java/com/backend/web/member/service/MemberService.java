@@ -34,12 +34,13 @@ public class MemberService {
         Member member = Member.builder()
                 .loginId(memberInfo.getLoginId())
                 .nickname(memberInfo.getNickname())
+                .email(memberInfo.getEmail())
                 .password(passwordEncoder.encode(memberInfo.getPassword()))
                 .memberType(MemberType.ROLE_USER)
                 .build();
         member.setCreateAt(LocalDateTime.now());
         member.setUpdateAt(LocalDateTime.now());
-        memberRepository.save(member).toMemberBasicDTO();
+        memberRepository.save(member);
     }
 
     @Transactional(readOnly = true)
@@ -50,5 +51,23 @@ public class MemberService {
             Member member = memberRepository.findByIdx(idx);
             return member.toMemberSimpleDTO();
         }
+    }
+
+    @Transactional
+    public void updateByMemberIdx(Long idx, MemberDTO.Update updateInfo) throws CustomException {
+        if (CheckUtil.isEmptyString(updateInfo.getNickname())) {
+            throw new CustomException(StatusCode.CODE_602);
+        } else if (CheckUtil.isEmptyString(updateInfo.getPassword())) {
+            throw new CustomException(StatusCode.CODE_603);
+        } else if (CheckUtil.isEmptyString(updateInfo.getEmail())) {
+            throw new CustomException(StatusCode.CODE_604);
+        }
+
+        Member member = memberRepository.findByIdx(idx);
+        member.setNickname(updateInfo.getNickname());
+        member.setEmail(updateInfo.getEmail());
+        member.setPassword(passwordEncoder.encode(updateInfo.getPassword()));
+        member.setUpdateAt(LocalDateTime.now());
+        memberRepository.save(member);
     }
 }

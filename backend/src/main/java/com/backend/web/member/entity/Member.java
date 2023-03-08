@@ -21,15 +21,17 @@ public class Member extends DateAudit {
     private Long idx;
     private String loginId;
     private String nickname;
+    private String email;
     private String password;
     @Enumerated(EnumType.STRING)
     private MemberType memberType;
 
     @Builder
-    public Member(Long idx, String loginId, String nickname, String password, MemberType memberType) {
+    public Member(Long idx, String loginId, String nickname, String email, String password, MemberType memberType) {
         this.idx = idx;
         this.loginId = loginId;
         this.nickname = nickname;
+        this.email = email;
         this.password = password;
         this.memberType = memberType;
     }
@@ -39,4 +41,15 @@ public class Member extends DateAudit {
     }
     public MemberDTO.Simple toMemberSimpleDTO(){ return new ModelMapper().map(this, MemberDTO.Simple.class);}
 
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }

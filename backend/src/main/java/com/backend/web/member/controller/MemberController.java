@@ -56,4 +56,19 @@ public class MemberController {
             return ResponseMessageUtil.errorMessage(e);
         }
     }
+
+    @PutMapping ("/api/member")
+    public ResponseEntity<ApiResponse> updateByMemberIdx(@RequestBody MemberDTO.Update updateInfo) {
+        try {
+            memberService.updateByMemberIdx(SecurityUtil.getCurrentMemberId(), updateInfo);
+            return ResponseMessageUtil.successMessage();
+        } catch (CustomException ce) {
+            return ResponseMessageUtil.errorMessage(ce.getCode());
+        } catch (Exception e) {
+            return ResponseMessageUtil.errorMessage(e);
+        }
+    }
+
+//    @DeleteMapping("/api/member")
+//    public ResponseEntity<ApiResponse> deleteByMemberIdx(@RequestBody MemberDTO.)
 }
