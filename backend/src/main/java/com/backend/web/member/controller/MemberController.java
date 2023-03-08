@@ -69,6 +69,15 @@ public class MemberController {
         }
     }
 
-//    @DeleteMapping("/api/member")
-//    public ResponseEntity<ApiResponse> deleteByMemberIdx(@RequestBody MemberDTO.)
+    @DeleteMapping("/api/member")
+    public ResponseEntity<ApiResponse> deleteByMemberIdx(@RequestBody MemberDTO.Delete deleteInfo) {
+        try {
+            memberService.deleteByMemberIdx(SecurityUtil.getCurrentMemberId(), deleteInfo);
+            return ResponseMessageUtil.successMessage();
+        } catch (CustomException ce) {
+            return ResponseMessageUtil.errorMessage(ce.getCode());
+        } catch (Exception e) {
+            return ResponseMessageUtil.errorMessage(e);
+        }
+    }
 }

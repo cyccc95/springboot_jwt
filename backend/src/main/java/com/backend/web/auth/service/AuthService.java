@@ -46,7 +46,7 @@ public class AuthService {
         if (CheckUtil.isEmptyString(signInInfo.getLoginId())) {
             throw new CustomException(StatusCode.CODE_601);
         } else if (CheckUtil.isEmptyString(signInInfo.getPassword())) {
-            throw new CustomException(StatusCode.CODE_603);
+            throw new CustomException(StatusCode.CODE_604);
         }
 
         Member member = memberRepository.findByLoginId(signInInfo.getLoginId())
